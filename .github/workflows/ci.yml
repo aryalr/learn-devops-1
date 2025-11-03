@@ -1,0 +1,28 @@
+name: CI Pipeline - Build dan Push Docker Image
+
+on:
+    push:
+        branches: ["main"] # triger pipline ini setiap kali ada push ke branch main
+
+jobs:
+    build_and_push:
+        runs-on: ubuntu-latest # Server virtual Ubuntu
+        steps:
+        - name: Chekout kode
+          uses: actions/checkout@v3
+
+        # (Opsional) Langkah untuk 'linting' atau 'unit test'
+        - name: Login ke Docker Hub
+          uses: docker/login-action@v2
+          with:
+            username: ${{ secrets.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_TOKEN }}
+        
+        - name: Build dan Push Docker image
+          uses: docker/build-push-action@v4
+          with:
+            context: .
+            file: ./Dockerfile
+            push: true
+            tags: spicysss/learn-devops-1:latest
+        
